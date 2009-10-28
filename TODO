@@ -2,7 +2,7 @@
 
 parcours.sh : 
 
-- Verifier que la creation des fichiers de descriptions ne sont faits
+- FAIT | Verifier que la creation des fichiers de descriptions ne sont faits
   que si necessaire ! (exemple : dans les dossiers ayant des fichiers)
 - Permettre l'ajout d'un parametre de verification des commentaires
   pour les images, autres que _thb_
