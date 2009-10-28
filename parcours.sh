@@ -118,7 +118,7 @@ lance"
   echo -e "\tConversion des images"
   # On se concentre sur les fichiers images dont les formats sont listes \
   # ci-dessous mais PAS les miniatures
-  for i in `ls ${A} | grep -Ei "*.jpg|*.jpeg|*.bmp|*.png|*.gif" | grep -v _thb_`
+  for i in `ls ${A} | grep -Ei "$IMG_EXT" | grep -v _thb_`
   do
     # Si l'element est un fichier (et qu'il existe) ET que son miniature \
     # n'existe pas
@@ -148,14 +148,14 @@ lance"
     echo -e "; Do not remove this comment (used for UTF-8 compliance)\n" > ${A}/${PIC_IDX}
     # Parcours des fichiers images selon les formats listes ci-dessous mais \
     # SEULEMENT les miniatures cette fois-ci
-    for i in `ls ${A} | grep -Ei "*.jpg|*.jpeg|*.bmp|*.png|*.gif" | grep "_thb_"`
+    for i in `ls ${A} | grep -Ei "$IMG_EXT" | grep "_thb_"`
     do
       echo "$i | Aucun commentaire" >> ${A}/${PIC_IDX}
     done
   else # s'il existe
     echo -e "\t\tVerification du fichier de description"
     # Comme avant : parcours des miniatures du dossier
-    for i in `ls ${A} | grep -Ei "*.jpg|*.jpeg|*.bmp|*.png|*.gif" | grep "_thb_"`
+    for i in `ls ${A} | grep -Ei "$IMG_EXT" | grep "_thb_"`
     do
       # Si la valeur resultante de la recherche sur le fichier image est nulle
       if  [ -z "$(grep $i ${A}/pic-desc.txt)" ]
