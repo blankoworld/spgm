@@ -1,0 +1,17 @@
+-- TODO LIST --
+
+parcours.sh : 
+
+- Verifier que la creation des fichiers de descriptions ne sont faits
+  que si necessaire ! (exemple : dans les dossiers ayant des fichiers)
+- Permettre l'ajout d'un parametre de verification des commentaires
+  pour les images, autres que _thb_
+- Mettre ce script en un format plus interessant, avec une aide
+
+calculPhotos.sh :
+
+- Permettre le choix du nom de fichier => mettre une variable pour cela
+
+global :
+
+- Ajouter des explications pour chacun des deux scripts
