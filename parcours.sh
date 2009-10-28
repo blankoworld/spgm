@@ -72,6 +72,24 @@ contient_fichiers_images()
   fi
 }
 
+conversion_images()
+{
+  echo -e "\tConversion des images"
+  # On se concentre sur les fichiers images dont les formats sont listes \
+  # ci-dessous mais PAS les miniatures
+  for img in `ls $1 | grep -Ei "$IMG_EXT" | grep -v _thb_`
+  do
+    # Si l'element est un fichier (et qu'il existe) ET que son miniature \
+    # n'existe pas
+    if test -f $1/$img && ! test -a $1/_thb_$img
+    then # alors conversion
+      convert -resize 120 $1/$img $1/_thb_$img
+    fi
+  done
+
+  return 1
+}
+
 ## DEBUT / BEGIN
 
 ## Parcours recursifs dans chacun des dossiers
@@ -115,18 +133,7 @@ lance"
   esac
 
   ## Conversion des images en miniatures
-  echo -e "\tConversion des images"
-  # On se concentre sur les fichiers images dont les formats sont listes \
-  # ci-dessous mais PAS les miniatures
-  for i in `ls ${A} | grep -Ei "$IMG_EXT" | grep -v _thb_`
-  do
-    # Si l'element est un fichier (et qu'il existe) ET que son miniature \
-    # n'existe pas
-    if test -f ${A}/$i && ! test -a ${A}/_thb_$i
-    then # alors conversion
-      convert -resize 120 ${A}/$i ${A}/_thb_$i
-    fi
-  done
+  conversion_images "${A}"
 
   ## Creation d'un descriptif de la galerie
   echo -e "\tCreation descriptif galerie"
