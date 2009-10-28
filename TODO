@@ -7,6 +7,13 @@ parcours.sh :
 - Permettre l'ajout d'un parametre de verification des commentaires
   pour les images, autres que _thb_
 - Mettre ce script en un format plus interessant, avec une aide
+- Permettre de faire une liste de fichier types à supprimer dans les dossers
+- Faire des variables pour le texte afficher
+- Faire choix FR/EN pour l'affichage du texte
+- Variables :
+  - pour le nom de fichier gal-desc
+  - idem pour celui du fichier pic-desc
+- Faire un système pour lister les formats traités
 
 calculPhotos.sh :
 
