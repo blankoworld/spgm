@@ -41,6 +41,11 @@
 
 ## Initialisation des variables
 REP_SOURCE=$1
+IDX_EXT=".txt" # index extension
+GAL_FILE="gal-desc"
+PIC_FILE="pic-desc"
+GAL_IDX="${GAL_FILE}${IDX_EXT}" # index de la galerie
+PIC_IDX="${PIC_FILE}${IDX_EXT}" # index des images d'un dossier
 
 ## Parcours recursifs dans chacun des dossiers
 find ${REP_SOURCE} -type d | while read A ; do
@@ -80,26 +85,26 @@ find ${REP_SOURCE} -type d | while read A ; do
   ## Creation d'un descriptif de la galerie
   echo -e "\tCreation descriptif galerie"
   # Si gal-desc.txt n'existe pas
-  if ! test -a ${A}/gal-desc.txt
+  if ! test -a ${A}/${GAL_IDX}
   then # alors creation du fichier gal-desc.txt
-    touch ${A}/gal-desc.txt
-    echo "Aucune description" > ${A}/gal-desc.txt
+    touch ${A}/${GAL_IDX}
+    echo "Aucune description" > ${A}/${GAL_IDX}
   fi
 
   ## Creation d'un descriptif des images
   echo -e "\tCreation descriptif images"
   # Si pic-desc.txt n'existe pas
-  if ! test -a ${A}/pic-desc.txt
+  if ! test -a ${A}/${PIC_IDX}
   then # alors creation et completement du fichier pic-desc.txt
     echo -e "\t\tCreation du fichier de description"
-    touch ${A}/pic-desc.txt
+    touch ${A}/${PIC_IDX}
     echo -e "\t\tAjout de commentaires placebo"
-    echo -e "; Do not remove this comment (used for UTF-8 compliance)\n" > ${A}/pic-desc.txt
+    echo -e "; Do not remove this comment (used for UTF-8 compliance)\n" > ${A}/${PIC_IDX}
     # Parcours des fichiers images selon les formats listes ci-dessous mais \
     # SEULEMENT les miniatures cette fois-ci
     for i in `ls ${A} | grep -Ei "*.jpg|*.jpeg|*.bmp|*.png|*.gif" | grep "_thb_"`
     do
-      echo "$i | Aucun commentaire" >> ${A}/pic-desc.txt
+      echo "$i | Aucun commentaire" >> ${A}/${PIC_IDX}
     done
   else # s'il existe
     echo -e "\t\tVerification du fichier de description"
@@ -109,7 +114,7 @@ find ${REP_SOURCE} -type d | while read A ; do
       # Si la valeur resultante de la recherche sur le fichier image est nulle
       if  [ -z "$(grep $i ${A}/pic-desc.txt)" ]
       then # alors ajout dans l'index pic-desc.txt
-        echo "$i | Aucun commentaire" >> ${A}/pic-desc.txt
+        echo "$i | Aucun commentaire" >> ${A}/${PIC_IDX}
       fi
     done
   fi
