@@ -90,6 +90,19 @@ conversion_images()
   return 1
 }
 
+creation_desc_gal()
+{
+  echo -e "\tCreation descriptif galerie"
+  # Si gal-desc.txt n'existe pas
+  if ! test -a $1/${GAL_IDX}
+  then # alors creation du fichier gal-desc.txt
+    touch $1/${GAL_IDX}
+    echo "Aucune description" > $1/${GAL_IDX}
+  fi
+
+  return 1
+}
+
 ## DEBUT / BEGIN
 
 ## Parcours recursifs dans chacun des dossiers
@@ -136,13 +149,7 @@ lance"
   conversion_images "${A}"
 
   ## Creation d'un descriptif de la galerie
-  echo -e "\tCreation descriptif galerie"
-  # Si gal-desc.txt n'existe pas
-  if ! test -a ${A}/${GAL_IDX}
-  then # alors creation du fichier gal-desc.txt
-    touch ${A}/${GAL_IDX}
-    echo "Aucune description" > ${A}/${GAL_IDX}
-  fi
+  creation_desc_gal "${A}"
 
   ## Creation d'un descriptif des images
   echo -e "\tCreation descriptif images"
