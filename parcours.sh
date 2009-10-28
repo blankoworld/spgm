@@ -37,20 +37,42 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.If not, see <http://www.gnu.org/licenses/>.
 
-## DEBUT / BEGIN
-
 ## Initialisation des variables
 
 CODEEXIT=0
 PROGRAMME=`basename $0`
 VERSION=0.0
 
-REP_SOURCE=$1
+REP_SOURCE=$1 # repertoire source
+
 IDX_EXT=".txt" # index extension
-GAL_FILE="gal-desc"
-PIC_FILE="pic-desc"
+GAL_FILE="gal-desc" # nom du fichier de description de la galerie
+PIC_FILE="pic-desc" # idem pour l'ensemble des images
 GAL_IDX="${GAL_FILE}${IDX_EXT}" # index de la galerie
 PIC_IDX="${PIC_FILE}${IDX_EXT}" # index des images d'un dossier
+
+IMG_EXT="*.jpg|*.jpeg|*.bmp|*.png|*.gif" # extensions prises en compte
+
+## Fonctions utiles
+
+contient_fichiers_images()
+{
+  nbre_image=`ls $1 | grep -Ei "$IMG_EXT"|wc -l`
+  if [[ $nbre_image -gt 0 ]] #test -z "$(ls $1)" 
+  then
+    CONTENU=1 # contient des images
+    return 1
+  elif test -z "$(ls $1)" #! test -z $nbre_image
+  then
+    CONTENU=2 # ne contient rien
+    return 2
+  else
+    CONTENU=42 # contient autre chose
+    return 42
+  fi
+}
+
+## DEBUT / BEGIN
 
 ## Parcours recursifs dans chacun des dossiers
 find ${REP_SOURCE} -type d | while read A ; do
@@ -72,6 +94,25 @@ find ${REP_SOURCE} -type d | while read A ; do
 #  fi
 
 ##########
+
+  ## Verification contenu
+  CONTENU="-" # controle
+  contient_fichiers_images "${A}"
+  case $CONTENU in
+  "-")
+    echo -e "\tLe test sur le contenu du dossier a echoue ou n'a pas ete \ 
+lance"
+    ;;
+  "2")
+    echo -e "\tLe dossier est vide"
+    ;;
+  "1")
+    echo -e "\tLe dossier contient des images"
+    ;;
+  "42")
+    echo -e "\tLe dossier ne contient aucune images prise en charge"
+    ;;
+  esac
 
   ## Conversion des images en miniatures
   echo -e "\tConversion des images"
