@@ -10,7 +10,7 @@ parcours.sh :
 - Permettre de faire une liste de fichier types à supprimer dans les dossiers
 - Faire des variables pour le texte affiché
 - Faire choix FR/EN pour l'affichage du texte
-- Variables :
+- FAIT | Variables :
   - pour le nom de fichier gal-desc
   - idem pour celui du fichier pic-desc
 - Faire un système pour lister les formats traités
