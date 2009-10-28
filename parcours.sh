@@ -40,6 +40,11 @@
 ## DEBUT / BEGIN
 
 ## Initialisation des variables
+
+CODEEXIT=0
+PROGRAMME=`basename $0`
+VERSION=0.0
+
 REP_SOURCE=$1
 IDX_EXT=".txt" # index extension
 GAL_FILE="gal-desc"
@@ -121,3 +126,10 @@ find ${REP_SOURCE} -type d | while read A ; do
 
   ## FIN / END
 done
+
+# Limite le code de retour aux valeurs classiques d'Unix (vu dans Script Shell \
+# chez O'Reilly)
+test $CODEEXIT -gt 125 && CODEEXIT=125
+
+exit $CODEEXIT
+
