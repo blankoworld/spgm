@@ -171,20 +171,19 @@ lance"
     ;;
   "1")
     echo -e "\tLe dossier contient des images"
+    ## Conversion des images en miniatures
+    conversion_images "${A}"
+
+    ## Creation d'un descriptif de la galerie
+    creation_desc_gal "${A}"
+
+    ## Creation d'un descriptif des images
+    creation_pic_gal "${A}"
     ;;
   "42")
     echo -e "\tLe dossier ne contient aucune images prise en charge"
     ;;
   esac
-
-  ## Conversion des images en miniatures
-  conversion_images "${A}"
-
-  ## Creation d'un descriptif de la galerie
-  creation_desc_gal "${A}"
-
-  ## Creation d'un descriptif des images
-  creation_pic_gal "${A}"
 
   ## FIN / END
 done
