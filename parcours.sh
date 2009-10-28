@@ -166,6 +166,38 @@ suppression_index()
   suppression_pic_gal "$1"
 }
 
+optimisation_index()
+{
+  echo -e "\tOptimisation de l'index"
+  # Si pic-desc.txt existe
+  if test -f $1/${PIC_IDX}
+  then
+    # Parcours du fichier index (pic-desc.txt)
+    cat $1/${PIC_IDX} | while read ligne ; do
+      # On extrait le nom de l'image des lignes donnees par pic-desc.txt
+      miniature=`echo $ligne | grep -Ei "${IMG_EXT}" | cut -d "|" -f 1`
+      # Si la chaine est non-nulle ET que le fichier n'existe pas
+      if test "${#miniature}" -ne 0 && ! test -f $1/$miniature && ! test -f $1/$(echo $miniatures|cut -d "_thb_" -f 2)
+      then # alors on agit
+        fichier=`$miniatures|cut -d "_thb_" -f 2`
+        echo "Suppression de la ligne pour le fichier: $fichier"
+
+
+################
+#
+# FINIR CETTE PARTIE DE SUPPRESSION
+#
+###############
+
+
+      fi
+    done
+  fi
+# ligne contenant le mot "13.jpg"
+# grep -r -n "13.jpg" ./pic-desc.txt | cut -d ":" -f 1
+
+}
+
 ## DEBUT / BEGIN
 
 ## Parcours recursifs dans chacun des dossiers
@@ -203,13 +235,16 @@ lance"
   "1")
     echo -e "\tLe dossier contient des images"
     ## Conversion des images en miniatures
-    conversion_images "${A}"
+#    conversion_images "${A}"
 
     ## Creation d'un descriptif de la galerie
-    creation_desc_gal "${A}"
+#    creation_desc_gal "${A}"
 
     ## Creation d'un descriptif des images
-    creation_pic_gal "${A}"
+#    creation_pic_gal "${A}"
+
+    ## Optimisation du fichier pic-desc.txt
+    optimisation_index "${A}"
     ;;
   "42")
     echo -e "\tLe dossier ne contient aucune images prise en charge"
