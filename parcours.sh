@@ -103,6 +103,38 @@ creation_desc_gal()
   return 1
 }
 
+creation_pic_gal()
+{
+  echo -e "\tCreation descriptif images"
+  # Si pic-desc.txt n'existe pas
+  if ! test -a $1/${PIC_IDX}
+  then # alors creation et completement du fichier pic-desc.txt
+    echo -e "\t\tCreation du fichier de description"
+    touch $1/${PIC_IDX}
+    echo -e "\t\tAjout de commentaires placebo"
+    echo -e "; Do not remove this comment (used for UTF-8 compliance)\n" > $1/${PIC_IDX}
+    # Parcours des fichiers images selon les formats listes ci-dessous mais \
+    # SEULEMENT les miniatures cette fois-ci
+    for img in `ls $1 | grep -Ei "$IMG_EXT" | grep "_thb_"`
+    do
+      echo "$img | Aucun commentaire" >> $1/${PIC_IDX}
+    done
+  else # s'il existe
+    echo -e "\t\tVerification du fichier de description"
+    # Comme avant : parcours des miniatures du dossier
+    for i in `ls $1 | grep -Ei "$IMG_EXT" | grep "_thb_"`
+    do
+      # Si la valeur resultante de la recherche sur le fichier image est nulle
+      if  [ -z "$(grep $img $1/pic-desc.txt)" ]
+      then # alors ajout dans l'index pic-desc.txt
+        echo "$img | Aucun commentaire" >> $1/${PIC_IDX}
+      fi
+    done
+  fi
+
+  return 1
+}
+
 ## DEBUT / BEGIN
 
 ## Parcours recursifs dans chacun des dossiers
@@ -152,32 +184,7 @@ lance"
   creation_desc_gal "${A}"
 
   ## Creation d'un descriptif des images
-  echo -e "\tCreation descriptif images"
-  # Si pic-desc.txt n'existe pas
-  if ! test -a ${A}/${PIC_IDX}
-  then # alors creation et completement du fichier pic-desc.txt
-    echo -e "\t\tCreation du fichier de description"
-    touch ${A}/${PIC_IDX}
-    echo -e "\t\tAjout de commentaires placebo"
-    echo -e "; Do not remove this comment (used for UTF-8 compliance)\n" > ${A}/${PIC_IDX}
-    # Parcours des fichiers images selon les formats listes ci-dessous mais \
-    # SEULEMENT les miniatures cette fois-ci
-    for i in `ls ${A} | grep -Ei "$IMG_EXT" | grep "_thb_"`
-    do
-      echo "$i | Aucun commentaire" >> ${A}/${PIC_IDX}
-    done
-  else # s'il existe
-    echo -e "\t\tVerification du fichier de description"
-    # Comme avant : parcours des miniatures du dossier
-    for i in `ls ${A} | grep -Ei "$IMG_EXT" | grep "_thb_"`
-    do
-      # Si la valeur resultante de la recherche sur le fichier image est nulle
-      if  [ -z "$(grep $i ${A}/pic-desc.txt)" ]
-      then # alors ajout dans l'index pic-desc.txt
-        echo "$i | Aucun commentaire" >> ${A}/${PIC_IDX}
-      fi
-    done
-  fi
+  creation_pic_gal "${A}"
 
   ## FIN / END
 done
