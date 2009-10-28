@@ -135,6 +135,37 @@ creation_pic_gal()
   return 1
 }
 
+suppression_desc_gal()
+{
+  if test -f $1/${GAL_IDX}
+  then
+    echo -e "\t\tSuppression de la description inutile de la galerie"
+    rm -f $1/${GAL_IDX}
+    return 2
+  fi
+
+  return 1
+}
+
+suppression_pic_gal()
+{
+  if test -f $1/${PIC_IDX}
+  then
+    echo -e "\t\tSuppression de l'index inutile des images de la galerie"
+    rm -f $1/${PIC_IDX}
+    return 2
+  fi
+
+  return 1
+}
+
+suppression_index()
+{
+  echo -e "\tSuppression des index inutiles"
+  suppression_desc_gal "$1"
+  suppression_pic_gal "$1"
+}
+
 ## DEBUT / BEGIN
 
 ## Parcours recursifs dans chacun des dossiers
@@ -182,6 +213,7 @@ lance"
     ;;
   "42")
     echo -e "\tLe dossier ne contient aucune images prise en charge"
+    suppression_index "${A}"
     ;;
   esac
 
