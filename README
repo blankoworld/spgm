@@ -2,7 +2,7 @@
  ##  ENGLISH  ##
 ###############
 
--- About --
+### ABOUT ###
 
 These scripts are developped for SPGM.
 
@@ -10,15 +10,107 @@ They don't be part of SPGM but they are excepted to be useful.
 
 SPGM is available here : http://spgm.sourceforge.net/
 
--- Use --
+### DESCRIPTION ###
 
-Give here both scripts use.
+There is some scripts : 
++ parcours.sh
++ calculPhotos.sh
++ nettoyage.sh
+
+#--[[ parcours.sh ]]--#
+
+It permits to scan a directory recursively and :
+- create thumbnails for pictures files. File formats are given by this :
+    parcours.sh --help
+- create gal-desc.txt for directories which contain pictures
+- create pic-desc.txt for directories which contain pictures thumbnails
+- optimize the pic-desc.txt files by removing lines that contain unexistant \
+files
+
+#--[[ nettoyage.sh ]]--#
+
+It permits to scan a directory recursively and :
+- removing all gal-desc.txt
+- removing all pic-desc.txt
+- removing all "_thb_" thumbnails files
+
+So this permits having a directory like any other.
+
+### USE ###
+
+#--[[ parcours.sh ]]--#
+
+To use this script, just type : 
+  parcours.sh [OPTIONS] [TARGET]
+
+where OPTIONS could be : 
+  --version   print program's version
+  --help      print program's help (only french help available at this moment)   
+  -v          verbose mode
+  -s          removing unwanted files (juste change the list_suppr variable)
+
+where TARGET is the SPGM "gal" directory.
+
+Examples : 
+
+# This command launch the program as usual
+/usr/bin/bash parcours.sh /srv/www/spgm/gal/
+
+# This command launch the programm with verbose mode
+/usr/bin/bash parcours.sh -v /srv/www/spgm/gal/
+
+# This commande launch the program with verbose mode and accept removing
+#+ unwanted files by reading list_suppr variable in the script
+/usr/bin/bash parcours.sh -vs /srv/www/spgm/gal/
+
+#--[[ nettoyage.sh ]]--#
+
+To use this script, just type : 
+  nettoyage.sh [TARGET]
+
+where TARGET is the process directory.
+
+Examples : 
+
+# This command launch the program as usual
+/usr/bin/bash nettoyage.sh /srv/www/spgm/gal/
+
+#--[[ calculPhotos.sh ]]--#
+
+To use this script, just type : 
+  calculPhotos.sh [TARGET]
+
+where TARGET is :
+- the directory to calculate non-_thb_-thumbnails files
+- the directory where the result file would be registered
+
+Examples : 
+
+# This command will launch the program in /srv/www/spgm/gal and register
+#+ a file named nbrePhotos.txt in /srv/www/spgm/gal with a number
+
+/usr/bin/bash calculPhotos.sh /srv/www/spgm/gal/
+
+Now you could add this script into "index.php" spgm file : 
+
+  There is approx.
+  <?php
+  if(file_exists('./gal/nbrePhotos.txt')) {
+    $lines = file('./gal/nbrePhotos.txt');
+    echo $lines[0];
+  }
+  else {
+    echo "un nombre inconnu d'";
+  }
+  ?> picture(s).</p>
+
+This will print on screen something like : "There is approx. 6 picture(s).".
 
   ################
  ##  FRANCAIS  ##
 ################
 
--- À propos --
+### À PROPOS ###
 
 Ces scripts sont développés pour SPGM.
 
@@ -26,6 +118,106 @@ Il ne font pas partie intégrante de SPGM mais sont censés être utiles.
 
 SPGM est disponible ici : http://spgm.sourceforge.net/
 
--- UTILISATION --
+### DESCRIPTION ###
 
-Mettre ici l'utilisation des deux scripts (notamment pour calculPhotos.sh)
+Il y a quelques scripts : 
++ parcours.sh
++ calculPhotos.sh
++ nettoyage.sh
+
+#--[[ parcours.sh ]]--#
+
+Il permet de parcourir un répertoire récursivement afin de :
+- créer les miniatures des images dont les formats pris en compte sont donnés
+par : 
+    parcours.sh --help
+- créer un fichier gal-desc.txt pour chaque répertoire contenant des images
+prises en charge
+- créer un fichier pic-desc.txt pour chaque répertoire contenant des images 
+prises en charge
+- optimiser le fichier pic-desc.txt de chaque répertoire en supprimant les 
+lignes inutiles
+
+#--[[ nettoyage.sh ]]--#
+
+Il permet de parcourir un dossier récursivement afin de :
+- supprimer les fichiers gal-desc.txt
+- supprimer les fichiers pic-desc.txt
+- supprimer toutes les miniatures d'images commençant par "_thb_"
+
+Cela permet ainsi d'obtenir un dosser dit "sain" comme tout les autres.
+
+### UTILISATION ###
+
+#--[[ parcours.sh ]]--#
+
+Pour utiliser ce script, tapez simplement : 
+  parcours.sh [OPTIONS] [CIBLE]
+
+où OPTIONS peut être remplacé par : 
+  --version   affiche la version du programme
+  --help      affiche l'aide du programme
+  -v          mode verbeux
+  -s          supprime les fichiers indésirables (changez simplement la 
+ variable list_suppr dans le script)
+
+où CIBLE est le répertoire contenant la galerie SPGM (ou tout autre répertoire
+que vous considérez comme utile à traiter)
+
+Exemples : 
+
+# Cette commande lance le programme normalement
+/usr/bin/bash parcours.sh /srv/www/spgm/gal/
+
+# Cette commande lance le programme en mode verbeux
+/usr/bin/bash parcours.sh -v /srv/www/spgm/gal/
+
+# Cette commande lance le programme en mode verbeux et active la suppression 
+#+ des fichiers indésirables selon la variable list_suppr du script
+/usr/bin/bash parcours.sh -vs /srv/www/spgm/gal/
+
+#--[[ nettoyage.sh ]]--#
+
+Pour utiliser ce script, tapez simplement :
+  nettoyage.sh [CIBLE]
+
+où CIBLE est le répertoire contenant la galerie SPGM (ou tout autre répertoire
+que vous considérez comme utile à traiter)
+
+Exemples : 
+
+# Cette commande lance le programme normalement
+/usr/bin/bash nettoyage.sh /srv/www/spgm/gal/
+
+#--[[ calculPhotos.sh ]]--#
+
+Pour utiliser ce script, tapez simplement : 
+  calculPhotos.sh [CIBLE]
+
+où CIBLE est :
+- le répertoire dans lequel nous calculeront l'ensemble des images ne 
+ comportant pas le mot "_thb_"
+- le répertoire où le fichier résultant du traitement sera enregistré
+
+Exemples : 
+
+# Cette commande lancera le programme dans /srv/www/spgm/gal et enregistrera 
+#+ un fichier nommé nbrePhotos.txt dans /srv/www/spgm/gal, avec un numéro.
+
+/usr/bin/bash calculPhotos.sh /srv/www/spgm/gal/
+
+Vous pouvez désormais ajouter ce script dans le fichier "index.php" de spgm : 
+
+  Contient environ
+  <?php
+  if(file_exists('./gal/nbrePhotos.txt')) {
+    $lines = file('./gal/nbrePhotos.txt');
+    echo $lines[0];
+  }
+  else {
+    echo "un nombre inconnu d'";
+  }
+  ?> image(s).</p>
+
+Ceci afficher à l'écran quelque chose comme : "Contient environ 6 image(s).
+
