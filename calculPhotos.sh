@@ -1,11 +1,11 @@
-#! /bin/sh
+#!/bin/sh
 #
 # calculPhotos.sh
 #
 # FRANCAIS
 #
 # Calcule le nombre de fichiers images miniatures _thb_ et donne le résultat 
-#   dans un fichier .txt
+#+ dans un fichier .txt
 #
 # ENGLISH
 #
@@ -29,4 +29,24 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.If not, see <http://www.gnu.org/licenses/>.
 
-ls -R | grep -Ei "*.jpg|*.jpeg|*.bmp|*.gif|*.png" | grep -v "_thb_" | wc -l > nbrePhotos.txt
+## Initialisation des variables
+
+CODEEXIT=0
+PROGRAMME=`basename $0`
+VERSION=0.0
+
+REP_SRC=$1 # repertoire de base contenant la galerie
+NOM_FICHIER="nbrePhotos.txt"
+IMG_EXT="*.jpg|*.jpeg|*.bmp|*.gif|*.png"
+
+## DEBUT / BEGIN
+ls -R ${REP_SRC} | grep -Ei "${IMG_EXT}" | grep -v "_thb_" | wc -l > ${REP_SRC}/${NOM_FICHIER}
+
+## FIN / END
+
+# Limite le code de retour aux valeurs classiques d'Unix (vu dans Script Shell 
+#+ chez O'Reilly)
+test $CODEEXIT -gt 125 && CODEEXIT=125
+
+exit $CODEEXIT
+
