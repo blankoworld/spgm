@@ -41,9 +41,13 @@
 
 CODEEXIT=0
 PROGRAMME=`basename $0`
-VERSION=0.0
+VERSION=0.1
 
-REP_SOURCE=$1 # repertoire source
+# mode verbeux desactive
+verbeux=0
+
+# repertoire source
+REP_SOURCE=
 
 IDX_EXT=".txt" # index extension
 GAL_FILE="gal-desc" # nom du fichier de description de la galerie
@@ -52,6 +56,50 @@ GAL_IDX="${GAL_FILE}${IDX_EXT}" # index de la galerie
 PIC_IDX="${PIC_FILE}${IDX_EXT}" # index des images d'un dossier
 
 IMG_EXT="*.jpg|*.jpeg|*.bmp|*.png|*.gif" # extensions prises en compte
+
+## Fonctions basiques
+
+erreur()
+{
+  echo "$@" 1>&2
+  utilisation_puis_sortie 1
+}
+
+utilisation()
+{
+  echo "Utilisation: $PROGRAMME [OPTIONS] [DOSSIER_CIBLE]"
+  echo -e "Permet de générer dans le répertoire tout les fichiers nécessaires\n\
+ pour l'utilisation de SPGM (Simple Picture Gallery Manager)."
+  echo -e "Ceci comprend les fichiers gal-desc.txt, les fichiers pic-desc.txt\n\
+ ainsi que toutes les miniatures des images."
+  echo -e "$PROGRAMME permet aussi de supprimer si besoin les lignes inutiles\n\
+ du fichier pic-desc.txt."
+  echo ""
+  echo "Options possibles :"
+  echo -e "  -h, --h, -help, --help, -?, --?  Afficher l'aide mémoire"
+  echo -e "  --version                        Afficher le nom et la \n\
+ version du logiciel"
+  echo -e "  -v                               Mode verbeux"
+}
+
+utilisation_puis_sortie()
+{
+  utilisation
+  exit $1
+}
+
+version()
+{
+  echo "$PROGRAMME version $VERSION"
+}
+
+affichage_mode_verbeux()
+{
+  if test $verbeux -ne 0
+  then
+    echo -e "$1"
+  fi
+}
 
 ## Fonctions utiles
 
@@ -74,7 +122,7 @@ contient_fichiers_images()
 
 conversion_images()
 {
-  echo -e "\tConversion des images"
+  affichage_mode_verbeux "\tConversion des images"
   # On se concentre sur les fichiers images dont les formats sont listes 
   #+ ci-dessous mais PAS les miniatures
   for img in `ls $1 | grep -Ei "$IMG_EXT" | grep -v _thb_`
@@ -86,32 +134,28 @@ conversion_images()
       convert -resize 120 $1/$img $1/_thb_$img
     fi
   done
-
-  return 1
 }
 
 creation_desc_gal()
 {
-  echo -e "\tCreation descriptif galerie"
+  affichage_mode_verbeux "\tCreation descriptif galerie"
   # Si gal-desc.txt n'existe pas
   if ! test -a $1/${GAL_IDX}
   then # alors creation du fichier gal-desc.txt
     touch $1/${GAL_IDX}
     echo "Aucune description" > $1/${GAL_IDX}
   fi
-
-  return 1
 }
 
 creation_pic_gal()
 {
-  echo -e "\tCreation descriptif images"
+  affichage_mode_verbeux "\tCreation descriptif images"
   # Si pic-desc.txt n'existe pas
   if ! test -a $1/${PIC_IDX}
   then # alors creation et completement du fichier pic-desc.txt
-    echo -e "\t\tCreation du fichier de description"
+    affichage_mode_verbeux "\t\tCreation du fichier de description"
     touch $1/${PIC_IDX}
-    echo -e "\t\tAjout de commentaires placebo"
+    affichage_mode_verbeux "\t\tAjout de commentaires placebo"
     echo -e "; Do not remove this comment (used for UTF-8 compliance)\n" > $1/${PIC_IDX}
     # Parcours des fichiers images selon les formats listes ci-dessous mais 
     #+ SEULEMENT les miniatures cette fois-ci
@@ -120,7 +164,7 @@ creation_pic_gal()
       echo "$img | Aucun commentaire" >> $1/${PIC_IDX}
     done
   else # s'il existe
-    echo -e "\t\tVerification du fichier de description"
+    affichage_mode_verbeux "\t\tVerification du fichier de description"
     # Comme avant : parcours des miniatures du dossier
     for img in `ls $1 | grep -Ei "$IMG_EXT" | grep "_thb_"`
     do
@@ -131,15 +175,13 @@ creation_pic_gal()
       fi
     done
   fi
-
-  return 1
 }
 
 suppression_desc_gal()
 {
   if test -f $1/${GAL_IDX}
   then
-    echo -e "\t\tSuppression de la description inutile de la galerie"
+    affichage_mode_verbeux "\t\tSuppression de la description inutile de la galerie"
     rm -f $1/${GAL_IDX}
     return 2
   fi
@@ -151,7 +193,7 @@ suppression_pic_gal()
 {
   if test -f $1/${PIC_IDX}
   then
-    echo -e "\t\tSuppression de l'index inutile des images de la galerie"
+    affichage_mode_verbeux "\t\tSuppression de l'index inutile des images de la galerie"
     rm -f $1/${PIC_IDX}
     return 2
   fi
@@ -161,14 +203,14 @@ suppression_pic_gal()
 
 suppression_index()
 {
-  echo -e "\tSuppression des index inutiles"
+  affichage_mode_verbeux "\tSuppression des index inutiles"
   suppression_desc_gal "$1"
   suppression_pic_gal "$1"
 }
 
 optimisation_index()
 {
-  echo -e "\tOptimisation de l'index"
+  affichage_mode_verbeux "\tOptimisation de l'index"
   # Si pic-desc.txt existe
   if test -f $1/${PIC_IDX}
   then
@@ -178,10 +220,7 @@ optimisation_index()
       miniature=`echo $ligne | grep -Ei "${IMG_EXT}" | cut -d "|" -f 1`
       case $miniature in
       "")
-        echo -e "\t\tLigne vide: aucune modification"
-      ;;
-      "; Do not remove this comment (used for UTF-8 compliance)")
-        echo -e "\t\tLigne de description du fichier: aucune modification"
+        affichage_mode_verbeux "\t\tLigne vide: aucune modification"
       ;;
       *)
       # Si le fichier miniature n'existe pas (ceci implique donc que la 
@@ -191,7 +230,7 @@ optimisation_index()
       then # alors on supprime la ligne dans le fichier d'index des images
         # nom reel du fichier
         fichier=`echo $miniature|cut -d "_" -f 3`
-        echo -e "\t\tSuppression de la ligne pour le fichier: $fichier"
+        affichage_mode_verbeux "\t\tSuppression de la ligne pour le fichier: $fichier"
         # suppression de la ligne contenant le nom de fichier et enregistrement
         sed -i "'/$fichier/d'" $1/${PIC_IDX}
       fi
@@ -208,6 +247,46 @@ optimisation_index()
 }
 
 ## DEBUT / BEGIN
+
+# Verification des parametres donnes
+while test $# -gt 0
+do
+  case $1 in
+    -v )
+    verbeux=1
+    ;;
+    --help | --h | '--?' | -help | -h | '-?' )
+    utilisation_puis_sortie 0
+    ;;
+    --version)
+    version
+    exit 0
+    ;;
+    -*)
+    erreur "Option non reconnue : $1"
+    ;;
+    *)
+    break
+    ;;
+  esac
+  shift
+done
+
+# Enregistrement de la variable pour le dossier source
+REP_SOURCE=$1
+
+# Tests avant de continuer
+if test -z "$REP_SOURCE"
+then
+  erreur Vous devez indiquer une valeur pour le repertoire a parcourir
+elif ! test -d "$REP_SOURCE"
+then
+  erreur Le parametre indique n\'est pas un dossier
+elif ! [[ $(ls $1 | grep -Ei "$IMG_EXT"|wc -l) -gt 0 ]]
+then
+  erreur Aucun fichier image pris en charge par $PROGRAMME ne se trouve dans \
+  votre dossier
+fi
 
 ## Parcours recursifs dans chacun des dossiers
 find ${REP_SOURCE} -type d | while read A ; do
@@ -256,7 +335,7 @@ lance"
     optimisation_index "${A}"
     ;;
   "42")
-    echo -e "\tLe dossier ne contient aucune images prise en charge"
+    echo -e "\tLe dossier ne contient aucune image prise en charge"
     suppression_index "${A}"
     ;;
   esac
