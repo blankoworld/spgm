@@ -33,6 +33,8 @@ It permits to scan a directory recursively and :
 - removing all gal-desc.txt
 - removing all pic-desc.txt
 - removing all "_thb_" thumbnails files
+- removing all "nbrePhotos.txt" files (can be changed by "calculPhotos" 
+ variable)
 
 So this permits having a directory like any other.
 
@@ -144,6 +146,8 @@ Il permet de parcourir un dossier récursivement afin de :
 - supprimer les fichiers gal-desc.txt
 - supprimer les fichiers pic-desc.txt
 - supprimer toutes les miniatures d'images commençant par "_thb_"
+- supprimer tout les fichiers "nbrePhotos.txt" (peut être changé par la 
+ variable "calculPhotos")
 
 Cela permet ainsi d'obtenir un dosser dit "sain" comme tout les autres.
 
