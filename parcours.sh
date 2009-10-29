@@ -75,12 +75,12 @@ contient_fichiers_images()
 conversion_images()
 {
   echo -e "\tConversion des images"
-  # On se concentre sur les fichiers images dont les formats sont listes \
-  # ci-dessous mais PAS les miniatures
+  # On se concentre sur les fichiers images dont les formats sont listes 
+  #+ ci-dessous mais PAS les miniatures
   for img in `ls $1 | grep -Ei "$IMG_EXT" | grep -v _thb_`
   do
-    # Si l'element est un fichier (et qu'il existe) ET que son miniature \
-    # n'existe pas
+    # Si l'element est un fichier (et qu'il existe) ET que son miniature 
+    #+ n'existe pas
     if test -f $1/$img && ! test -a $1/_thb_$img
     then # alors conversion
       convert -resize 120 $1/$img $1/_thb_$img
@@ -113,8 +113,8 @@ creation_pic_gal()
     touch $1/${PIC_IDX}
     echo -e "\t\tAjout de commentaires placebo"
     echo -e "; Do not remove this comment (used for UTF-8 compliance)\n" > $1/${PIC_IDX}
-    # Parcours des fichiers images selon les formats listes ci-dessous mais \
-    # SEULEMENT les miniatures cette fois-ci
+    # Parcours des fichiers images selon les formats listes ci-dessous mais 
+    #+ SEULEMENT les miniatures cette fois-ci
     for img in `ls $1 | grep -Ei "$IMG_EXT" | grep "_thb_"`
     do
       echo "$img | Aucun commentaire" >> $1/${PIC_IDX}
@@ -122,7 +122,7 @@ creation_pic_gal()
   else # s'il existe
     echo -e "\t\tVerification du fichier de description"
     # Comme avant : parcours des miniatures du dossier
-    for i in `ls $1 | grep -Ei "$IMG_EXT" | grep "_thb_"`
+    for img in `ls $1 | grep -Ei "$IMG_EXT" | grep "_thb_"`
     do
       # Si la valeur resultante de la recherche sur le fichier image est nulle
       if  [ -z "$(grep $img $1/pic-desc.txt)" ]
@@ -176,26 +176,35 @@ optimisation_index()
     cat $1/${PIC_IDX} | while read ligne ; do
       # On extrait le nom de l'image des lignes donnees par pic-desc.txt
       miniature=`echo $ligne | grep -Ei "${IMG_EXT}" | cut -d "|" -f 1`
-      # Si la chaine est non-nulle ET que le fichier n'existe pas
-      if test "${#miniature}" -ne 0 && ! test -f $1/$miniature && ! test -f $1/$(echo $miniatures|cut -d "_thb_" -f 2)
-      then # alors on agit
-        fichier=`$miniatures|cut -d "_thb_" -f 2`
-        echo "Suppression de la ligne pour le fichier: $fichier"
-
-
-################
-#
-# FINIR CETTE PARTIE DE SUPPRESSION
-#
-###############
-
-
+      case $miniature in
+      "")
+        echo -e "\t\tLigne vide: aucune modification"
+      ;;
+      "; Do not remove this comment (used for UTF-8 compliance)")
+        echo -e "\t\tLigne de description du fichier: aucune modification"
+      ;;
+      *)
+      # Si le fichier miniature n'existe pas (ceci implique donc que la 
+      #+ generation precedente n'a soi pas fonctionne soit que le fichier 
+      #+ n'existe effectivement pas et a ete supprime entre temps
+      if ! test -f $1/$miniature
+      then # alors on supprime la ligne dans le fichier d'index des images
+        # nom reel du fichier
+        fichier=`echo $miniature|cut -d "_" -f 3`
+        echo -e "\t\tSuppression de la ligne pour le fichier: $fichier"
+        # suppression de la ligne contenant le nom de fichier et enregistrement
+        sed -i "'/$fichier/d'" $1/${PIC_IDX}
       fi
+      ;;
+      esac
     done
   fi
-# ligne contenant le mot "13.jpg"
-# grep -r -n "13.jpg" ./pic-desc.txt | cut -d ":" -f 1
+## Fonctions utiles
+  # retourne le nom du fichier sans _thb_
+  #        nom_fichier=`echo $miniature|cut -d "_" -f 3`
 
+  # retourne le numéro de ligne pour le mot recherché
+  #        num_ligne=`grep -r -n "$nom_fichier" $1/${PIC_IDX} | cut -d ":" -f 1`
 }
 
 ## DEBUT / BEGIN
@@ -235,13 +244,13 @@ lance"
   "1")
     echo -e "\tLe dossier contient des images"
     ## Conversion des images en miniatures
-#    conversion_images "${A}"
+    conversion_images "${A}"
 
     ## Creation d'un descriptif de la galerie
-#    creation_desc_gal "${A}"
+    creation_desc_gal "${A}"
 
     ## Creation d'un descriptif des images
-#    creation_pic_gal "${A}"
+    creation_pic_gal "${A}"
 
     ## Optimisation du fichier pic-desc.txt
     optimisation_index "${A}"
@@ -255,8 +264,8 @@ lance"
   ## FIN / END
 done
 
-# Limite le code de retour aux valeurs classiques d'Unix (vu dans Script Shell \
-# chez O'Reilly)
+# Limite le code de retour aux valeurs classiques d'Unix (vu dans Script Shell 
+#+ chez O'Reilly)
 test $CODEEXIT -gt 125 && CODEEXIT=125
 
 exit $CODEEXIT
