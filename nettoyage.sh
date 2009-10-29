@@ -5,7 +5,10 @@ CODEEXIT=0
 PROGRAMME=`basename $0`
 VERSION=0.0
 
-REP_SOURCE=$1
+REP_SOURCE=$1 # repertoire a parcourir
+
+# nom du fichier contenant le nombre de photos de la galerie
+calculPhotos="nbrePhotos.txt"
 
 # Debut
 find ${REP_SOURCE} -type d | while read A ; do
@@ -36,10 +39,19 @@ find ${REP_SOURCE} -type d | while read A ; do
     fi
   done
 
+  # suppression de potentiels fichiers nbrePhotos.txt
+  echo -e "\tSuppression du fichier $calculPhotos si existant"
+  # si l'element est un fichier
+  if test -f ${A}/$calculPhotos
+  then
+    echo -e "\t\tLe fichier existe, suppression..."
+    rm -f ${A}/$calculPhotos
+  fi
+
 done
 
 # Limite le code de retour aux valeurs classiques d'Unix (vu dans Script Shell \
-# chez O'Reilly)
+#+ chez O'Reilly)
 test $CODEEXIT -gt 125 && CODEEXIT=125
 
 exit $CODEEXIT
