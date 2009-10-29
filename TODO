@@ -6,8 +6,8 @@ parcours.sh :
   que si necessaire ! (exemple : dans les dossiers ayant des fichiers)
 - Permettre l'ajout d'un parametre de verification des commentaires
   pour les images, autres que _thb_
-- Mettre ce script en un format plus interessant, avec une aide
-- Permettre de faire une liste de fichier types à supprimer dans les dossiers
+- FAIT | Mettre ce script en un format plus interessant, avec une aide
+- FAIT | Permettre de faire une liste de fichier types à supprimer dans les dossiers
 - Faire des variables pour le texte affiché
 - Faire choix FR/EN pour l'affichage du texte
 - FAIT | Variables :
@@ -17,7 +17,7 @@ parcours.sh :
 
 calculPhotos.sh :
 
-- Permettre le choix du nom de fichier => mettre une variable pour cela
+- FAIT | Permettre le choix du nom de fichier => mettre une variable pour cela
 
 global :
 
