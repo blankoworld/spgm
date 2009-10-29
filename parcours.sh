@@ -362,16 +362,16 @@ then
 fi
 
 ## Parcours recursifs dans chacun des dossiers
-find ${REP_SOURCE} -type d | while read A ; do
+find ${REP_SOURCE} -type d | while read dossier ; do
 
   # Affichage dossier dans lequel nous nous trouvons
-  echo $A
+  echo $dossier
 
-  suppression_fichiers_indesirables "${A}"
+  suppression_fichiers_indesirables "${dossier}"
 
   ## Verification contenu
   CONTENU="-" # controle
-  contient_fichiers_images "${A}"
+  contient_fichiers_images "${dossier}"
   case $CONTENU in
   "-")
     echo -e "\t$txt_fr_test_rep_echoue"
@@ -382,20 +382,20 @@ find ${REP_SOURCE} -type d | while read A ; do
   "1")
     echo -e "\t$txt_fr_test_rep_images"
     ## Conversion des images en miniatures
-    conversion_images "${A}"
+    conversion_images "${dossier}"
 
     ## Creation d'un descriptif de la galerie
-    creation_desc_gal "${A}"
+    creation_desc_gal "${dossier}"
 
     ## Creation d'un descriptif des images
-    creation_pic_gal "${A}"
+    creation_pic_gal "${dossier}"
 
     ## Optimisation du fichier pic-desc.txt
-    optimisation_index "${A}"
+    optimisation_index "${dossier}"
     ;;
   "42")
     echo -e "\t$txt_fr_test_rep_autre"
-    suppression_index "${A}"
+    suppression_index "${dossier}"
     ;;
   esac
 
