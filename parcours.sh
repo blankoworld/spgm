@@ -62,6 +62,29 @@ PIC_IDX="${PIC_FILE}${IDX_EXT}" # index des images d'un dossier
 
 IMG_EXT="*.jpg|*.jpeg|*.bmp|*.png|*.gif" # extensions prises en compte
 
+# variables texte : 
+txt_fr_gal_desc="Aucune description"
+txt_fr_pic_desc="Aucun commentaire"
+txt_fr_suppr_indesirables="Suppression des fichiers indésirables"
+txt_fr_converion="Conversion des images"
+txt_fr_creation_gal_idx="Création descriptif galerie"
+txt_fr_creation_pic_idx="Création descriptif images"
+txt_fr_creation_desc_file="Création du fichier de description"
+txt_fr_ajout_com="Ajout de commentaires placebo"
+txt_fr_verif_desc="Vérification du fichier de description"
+txt_fr_suppr_desc="Suppression de la description inutile de la galerie"
+txt_fr_suppr_idx="Suppression de l'index inutile des images de la galerie"
+txt_fr_suppr_idx_tous="Suppression des index inutiles"
+txt_fr_optim_idx="Optimisation de l'index"
+txt_fr_optim_ligne_vide="Ligne vide: aucune modification"
+txt_fr_suppr_ligne="Suppression de la ligne pour le fichier: "
+txt_fr_test_rep_echoue="Le test sur le contenu du dossier a echoué ou n'a pas \
+été lancé."
+txt_fr_test_rep_vide="Le dossier est vide."
+txt_fr_test_rep_images="Le dossier contient des images prises en charge."
+txt_fr_test_rep_autre="Le dossier ne contient AUCUNE image prise en charge."
+
+
 ## Fonctions basiques
 
 erreur()
@@ -116,7 +139,7 @@ suppression_fichiers_indesirables()
   # Suppression des fichiers selon une liste definie
   if test $suppression -ne 0
   then
-    affichage_mode_verbeux "\tSuppression des fichiers indésirables"
+    affichage_mode_verbeux "\t$txt_fr_suppr_indesirables"
     for mot in $liste_suppr
     do
       # si le fichier existe
@@ -147,7 +170,7 @@ contient_fichiers_images()
 
 conversion_images()
 {
-  affichage_mode_verbeux "\tConversion des images"
+  affichage_mode_verbeux "\t$txt_fr_converion"
   # On se concentre sur les fichiers images dont les formats sont listes 
   #+ ci-dessous mais PAS les miniatures
   for img in `ls $1 | grep -Ei "$IMG_EXT" | grep -v _thb_`
@@ -163,40 +186,41 @@ conversion_images()
 
 creation_desc_gal()
 {
-  affichage_mode_verbeux "\tCreation descriptif galerie"
+  affichage_mode_verbeux "\t$txt_fr_creation_gal_idx"
   # Si gal-desc.txt n'existe pas
   if ! test -a $1/${GAL_IDX}
   then # alors creation du fichier gal-desc.txt
+    affichage_mode_verbeux "\t\t$txt_fr_creation_desc_file"
     touch $1/${GAL_IDX}
-    echo "Aucune description" > $1/${GAL_IDX}
+    echo "$txt_fr_gal_desc" > $1/${GAL_IDX}
   fi
 }
 
 creation_pic_gal()
 {
-  affichage_mode_verbeux "\tCreation descriptif images"
+  affichage_mode_verbeux "\t$txt_fr_creation_pic_idx"
   # Si pic-desc.txt n'existe pas
   if ! test -a $1/${PIC_IDX}
   then # alors creation et completement du fichier pic-desc.txt
-    affichage_mode_verbeux "\t\tCreation du fichier de description"
+    affichage_mode_verbeux "\t\t$txt_fr_creation_desc_file"
     touch $1/${PIC_IDX}
-    affichage_mode_verbeux "\t\tAjout de commentaires placebo"
+    affichage_mode_verbeux "\t\t$txt_fr_ajout_com"
     echo -e "; Do not remove this comment (used for UTF-8 compliance)\n" > $1/${PIC_IDX}
     # Parcours des fichiers images selon les formats listes ci-dessous mais 
     #+ SEULEMENT les miniatures cette fois-ci
     for img in `ls $1 | grep -Ei "$IMG_EXT" | grep "_thb_"`
     do
-      echo "$img | Aucun commentaire" >> $1/${PIC_IDX}
+      echo "$img | $txt_fr_pic_desc" >> $1/${PIC_IDX}
     done
   else # s'il existe
-    affichage_mode_verbeux "\t\tVerification du fichier de description"
+    affichage_mode_verbeux "\t\t$txt_fr_verif_desc"
     # Comme avant : parcours des miniatures du dossier
     for img in `ls $1 | grep -Ei "$IMG_EXT" | grep "_thb_"`
     do
       # Si la valeur resultante de la recherche sur le fichier image est nulle
       if  [ -z "$(grep $img $1/pic-desc.txt)" ]
       then # alors ajout dans l'index pic-desc.txt
-        echo "$img | Aucun commentaire" >> $1/${PIC_IDX}
+        echo "$img | $txt_fr_pic_desc" >> $1/${PIC_IDX}
       fi
     done
   fi
@@ -206,7 +230,7 @@ suppression_desc_gal()
 {
   if test -f $1/${GAL_IDX}
   then
-    affichage_mode_verbeux "\t\tSuppression de la description inutile de la galerie"
+    affichage_mode_verbeux "\t\t$txt_fr_suppr_desc"
     rm -f $1/${GAL_IDX}
     return 2
   fi
@@ -218,7 +242,7 @@ suppression_pic_gal()
 {
   if test -f $1/${PIC_IDX}
   then
-    affichage_mode_verbeux "\t\tSuppression de l'index inutile des images de la galerie"
+    affichage_mode_verbeux "\t\t$txt_fr_suppr_idx"
     rm -f $1/${PIC_IDX}
     return 2
   fi
@@ -228,14 +252,14 @@ suppression_pic_gal()
 
 suppression_index()
 {
-  affichage_mode_verbeux "\tSuppression des index inutiles"
+  affichage_mode_verbeux "\t$txt_fr_suppr_idx_tous"
   suppression_desc_gal "$1"
   suppression_pic_gal "$1"
 }
 
 optimisation_index()
 {
-  affichage_mode_verbeux "\tOptimisation de l'index"
+  affichage_mode_verbeux "\t$txt_fr_optim_idx"
   # Si pic-desc.txt existe
   if test -f $1/${PIC_IDX}
   then
@@ -245,7 +269,7 @@ optimisation_index()
       miniature=`echo $ligne | grep -Ei "${IMG_EXT}" | cut -d "|" -f 1`
       case $miniature in
       "")
-        affichage_mode_verbeux "\t\tLigne vide: aucune modification"
+        affichage_mode_verbeux "\t\t$txt_fr_optim_ligne_vide"
       ;;
       *)
       # Si le fichier miniature n'existe pas (ceci implique donc que la 
@@ -255,9 +279,9 @@ optimisation_index()
       then # alors on supprime la ligne dans le fichier d'index des images
         # nom reel du fichier
         fichier=`echo $miniature|cut -d "_" -f 3`
-        affichage_mode_verbeux "\t\tSuppression de la ligne pour le fichier: $fichier"
+        affichage_mode_verbeux "\t\t$txt_fr_suppr_ligne $fichier"
         # suppression de la ligne contenant le nom de fichier et enregistrement
-        sed -i "'/$fichier/d'" $1/${PIC_IDX}
+        sed -i "/$fichier/d" $1/${PIC_IDX}
       fi
       ;;
       esac
@@ -333,14 +357,13 @@ find ${REP_SOURCE} -type d | while read A ; do
   contient_fichiers_images "${A}"
   case $CONTENU in
   "-")
-    echo -e "\tLe test sur le contenu du dossier a echoue ou n'a pas ete \ 
-lance"
+    echo -e "\t$txt_fr_test_rep_echoue"
     ;;
   "2")
-    echo -e "\tLe dossier est vide"
+    echo -e "\t$txt_fr_test_rep_vide"
     ;;
   "1")
-    echo -e "\tLe dossier contient des images"
+    echo -e "\t$txt_fr_test_rep_images"
     ## Conversion des images en miniatures
     conversion_images "${A}"
 
@@ -354,7 +377,7 @@ lance"
     optimisation_index "${A}"
     ;;
   "42")
-    echo -e "\tLe dossier ne contient aucune image prise en charge"
+    echo -e "\t$txt_fr_test_rep_autre"
     suppression_index "${A}"
     ;;
   esac
