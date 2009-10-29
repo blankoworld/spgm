@@ -351,14 +351,14 @@ REP_SOURCE=$1
 # Tests avant de continuer
 if test -z "$REP_SOURCE"
 then
-  erreur Vous devez indiquer une valeur pour le repertoire a parcourir
+  erreur Vous devez indiquer une valeur pour le répertoire à parcourir
 elif ! test -d "$REP_SOURCE"
 then
   erreur Le parametre indique n\'est pas un dossier
-elif ! [[ $(ls $1 | grep -Ei "$IMG_EXT"|wc -l) -gt 0 ]]
+elif ! [[ $(ls -R $1 | grep -Ei "$IMG_EXT"|wc -l) -gt 0 ]]
 then
   erreur Aucun fichier image pris en charge par $PROGRAMME ne se trouve dans \
-  votre dossier
+  votre dossier et ses sous-répertoires
 fi
 
 ## Parcours recursifs dans chacun des dossiers
