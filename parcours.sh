@@ -84,6 +84,7 @@ txt_fr_test_rep_vide="Le dossier est vide."
 txt_fr_test_rep_images="Le dossier contient des images prises en charge."
 txt_fr_test_rep_autre="Le dossier ne contient AUCUNE image prise en charge."
 
+txt_fr_formats_traites="Le script $PROGRAMME prend en charge les formats suivants : "
 
 ## Fonctions basiques
 
@@ -91,6 +92,20 @@ erreur()
 {
   echo "$@" 1>&2
   utilisation_puis_sortie 1
+}
+
+formats_traites()
+{
+  # Affichage des formats pris en compte dans les traitements
+  echo -e "$txt_fr_formats_traites"
+  # redefinition du caractere de separation
+  IFS="|"
+  # pour chaque format de la liste
+  for i in `echo "${IMG_EXT}"`
+  do
+    # affichage du format
+    echo "  $i"
+  done
 }
 
 utilisation()
@@ -111,6 +126,8 @@ utilisation()
   echo -e "  -s                               Mode suppression de fichiers \n\
  indésirables actif. La liste se trouve dans la variable 'liste_suppr' du \n\
  script $PROGRAMME."
+  echo ""
+  formats_traites
 }
 
 utilisation_puis_sortie()

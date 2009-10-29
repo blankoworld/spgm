@@ -8,12 +8,12 @@ parcours.sh :
   pour les images, autres que _thb_
 - FAIT | Mettre ce script en un format plus interessant, avec une aide
 - FAIT | Permettre de faire une liste de fichier types à supprimer dans les dossiers
-- Faire des variables pour le texte affiché
+- FAIT | Faire des variables pour le texte affiché
 - Faire choix FR/EN pour l'affichage du texte
 - FAIT | Variables :
   - pour le nom de fichier gal-desc
   - idem pour celui du fichier pic-desc
-- Faire un système pour lister les formats traités
+- FAIT | Faire un système pour lister les formats traités
 
 calculPhotos.sh :
 
