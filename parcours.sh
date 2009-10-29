@@ -43,8 +43,13 @@ CODEEXIT=0
 PROGRAMME=`basename $0`
 VERSION=0.1
 
-# mode verbeux desactive
+# desactive le mode verbeux
 verbeux=0
+# desactive le mode de suppression
+suppression=0
+# liste de fichiers à supprimer
+# index.dat provient de phpwebgallery
+liste_suppr="index.dat votreFichierIndesirable yourUnwantedFile"
 
 # repertoire source
 REP_SOURCE=
@@ -79,7 +84,10 @@ utilisation()
   echo -e "  -h, --h, -help, --help, -?, --?  Afficher l'aide mémoire"
   echo -e "  --version                        Afficher le nom et la \n\
  version du logiciel"
-  echo -e "  -v                               Mode verbeux"
+  echo -e "  -v                               Mode verbeux actif"
+  echo -e "  -s                               Mode suppression de fichiers \n\
+ indésirables actif. La liste se trouve dans la variable 'liste_suppr' du \n\
+ script $PROGRAMME."
 }
 
 utilisation_puis_sortie()
@@ -102,6 +110,23 @@ affichage_mode_verbeux()
 }
 
 ## Fonctions utiles
+
+suppression_fichiers_indesirables()
+{
+  # Suppression des fichiers selon une liste definie
+  if test $suppression -ne 0
+  then
+    affichage_mode_verbeux "\tSuppression des fichiers indésirables"
+    for mot in $liste_suppr
+    do
+      # si le fichier existe
+      if test -f $1/$mot
+      then # alors on le supprime
+        rm -f $1/$mot
+      fi
+    done
+  fi
+}
 
 contient_fichiers_images()
 {
@@ -255,6 +280,13 @@ do
     -v )
     verbeux=1
     ;;
+    -s )
+    suppression=1
+    ;;
+    -sv | -vs )
+    verbeux=1
+    suppression=1
+    ;;
     --help | --h | '--?' | -help | -h | '-?' )
     utilisation_puis_sortie 0
     ;;
@@ -294,20 +326,7 @@ find ${REP_SOURCE} -type d | while read A ; do
   # Affichage dossier dans lequel nous nous trouvons
   echo $A
 
-##########
-# Mettre ici les tests et les suppressions des fichiers non - desires
-# Ici ce sont des fichiers index.dat resultant de phpwebgallery
-
-# Add here some test code, for an example to remove some unwanted files
-# Here I remove index.dat files inherit from phpwebgallery
-
-#  echo -e "\tSuppression des fichiers indesirables"
-#  if test -f ${A}/index.dat
-#  then
-#    rm -f ${A}/index.dat
-#  fi
-
-##########
+  suppression_fichiers_indesirables "${A}"
 
   ## Verification contenu
   CONTENU="-" # controle
